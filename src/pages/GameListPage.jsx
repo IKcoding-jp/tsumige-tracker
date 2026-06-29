@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import supabase from "../lib/supabase";
 import { Button } from "@/components/ui/button";
 import GameCard from "../components/GameCard";
+import GameModal from "../components/GameModal";
 
 function GameListPage({ session }) {
   const [games, setGames] = useState([]);
@@ -77,22 +78,12 @@ function GameListPage({ session }) {
         ))}
       </div>
       {editingId !== null && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
-            <h2 className="text-lg font-bold mb-4">タイトルを編集</h2>
-            <input
-              value={editingTitle}
-              onChange={(e) => setEditingTitle(e.target.value)}
-              className="border rounded px-3 py-2 w-full mb-4"
-            />
-            <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setEditingId(null)}>
-                キャンセル
-              </Button>
-              <Button onClick={() => updateGame(editingId)}>確定</Button>
-            </div>
-          </div>
-        </div>
+        <GameModal
+          value={editingTitle}
+          onChange={(e) => setEditingTitle(e.target.value)}
+          onCancel={() => setEditingId(null)}
+          onSave={() => updateGame(editingId)}
+        />
       )}
     </div>
   );
