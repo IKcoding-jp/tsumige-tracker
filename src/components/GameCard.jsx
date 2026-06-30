@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { SiPlaystation, SiSteam } from "react-icons/si";
 import { BsNintendoSwitch } from "react-icons/bs";
 import { FaDesktop, FaMobileScreen, FaGamepad } from "react-icons/fa6";
+import { STATUS } from "@/utils/status";
 
 const PLATFORM_STYLE = {
   Switch: { icon: BsNintendoSwitch, className: "bg-[#E60012] text-white" },
@@ -14,11 +15,6 @@ const PLATFORM_STYLE = {
 };
 
 function GameCard({ game, onEdit, onDelete, onStatusChange }) {
-  function nextStatus(current) {
-    if (current === "unplayed") return "playing";
-    if (current === "playing") return "cleared";
-    return "unplayed";
-  }
   const platformStyle = PLATFORM_STYLE[game.platform];
   const PlatformIcon = platformStyle?.icon;
   return (
@@ -34,21 +30,10 @@ function GameCard({ game, onEdit, onDelete, onStatusChange }) {
         <Button
           size="sm"
           variant="outline"
-          onClick={() => onStatusChange(game.id, nextStatus(game.status))}
-          className={
-            "w-20 " +
-            (game.status === "playing"
-              ? "border-blue-500 text-blue-500"
-              : game.status === "cleared"
-                ? "border-green-600 text-green-600"
-                : "text-gray-500")
-          }
+          onClick={() => onStatusChange(game.id, STATUS[game.status].next)}
+          className={"w-20 " + STATUS[game.status].className}
         >
-          {game.status === "unplayed"
-            ? "未プレイ"
-            : game.status === "playing"
-              ? "プレイ中"
-              : "クリア済み"}
+          {STATUS[game.status].label}
         </Button>
         <Button variant="outline" onClick={() => onEdit(game)}>
           編集

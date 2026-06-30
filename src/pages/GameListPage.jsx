@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import supabase from "../lib/supabase";
 import { Button } from "@/components/ui/button";
+import { STATUS } from "@/utils/status";
+import supabase from "../lib/supabase";
 import GameCard from "../components/GameCard";
 import GameModal from "../components/GameModal";
 import Header from "../components/Header";
@@ -96,24 +97,15 @@ function GameListPage({ session }) {
         >
           すべて
         </Button>
-        <Button
-          variant={filter === "unplayed" ? "default" : "outline"}
-          onClick={() => setFilter("unplayed")}
-        >
-          未プレイ
-        </Button>
-        <Button
-          variant={filter === "playing" ? "default" : "outline"}
-          onClick={() => setFilter("playing")}
-        >
-          プレイ中
-        </Button>
-        <Button
-          variant={filter === "cleared" ? "default" : "outline"}
-          onClick={() => setFilter("cleared")}
-        >
-          クリア済み
-        </Button>
+        {Object.entries(STATUS).map(([key, { label }]) => (
+          <Button
+            key={key}
+            variant={filter === key ? "default" : "outline"}
+            onClick={() => setFilter(key)}
+          >
+            {label}
+          </Button>
+        ))}
         <select
           value={platformFilter}
           onChange={(e) => setPlatformFilter(e.target.value)}
