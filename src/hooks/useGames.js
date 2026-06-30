@@ -3,39 +3,66 @@ import supabase from "../lib/supabase";
 
 export function useGames(session) {
   const [games, setGames] = useState([]);
+  const [error, setError] = useState(null);
+
+  async function run(fn, errorMessage) {
+    try {
+      const { error } = await fn();
+      if (error) throw error;
+      fetchGames();
+    } catch (e) {
+      console.error(e);
+      setError(errorMessage);
+    }
+  }
 
   async function fetchGames() {
-    const { data } = await supabase
-      .from("games")
-      .select("*")
-      .order("created_at", { ascending: true });
-    setGames(data ?? []);
+    try {
+      const { data, error } = await supabase
+        .from("games")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      setGames(data ?? []);
+    } catch (e) {
+      console.error(e);
+      setError("データの取得に失敗しました");
+    }
   }
 
   async function addGame({ title, platform }) {
-    await supabase.from("games").insert({
-      title,
-      user_id: session.user.id,
-      status: "unplayed",
-      platform: platform || null,
-    });
-    fetchGames();
+    await run(
+      () =>
+        supabase.from("games").insert({
+          title,
+          user_id: session.user.id,
+          status: "unplayed",
+          platform: platform || null,
+        }),
+      "ゲームの追加に失敗しました",
+    );
   }
 
   async function deleteGame(id) {
-    await supabase.from("games").delete().eq("id", id);
-    fetchGames();
+    await run(
+      () => supabase.from("games").delete().eq("id", id),
+      "削除に失敗しました",
+    );
   }
   async function updateGame(id, title) {
-    await supabase.from("games").update({ title }).eq("id", id);
-    fetchGames();
+    await run(
+      () => supabase.from("games").update({ title }).eq("id", id),
+      "更新に失敗しました",
+    );
   }
   async function updateStatus(id, status) {
-    await supabase.from("games").update({ status }).eq("id", id);
-    fetchGames();
+    await run(
+      () => supabase.from("games").update({ status }).eq("id", id),
+      "ステータスの更新に失敗しました",
+    );
   }
   useEffect(() => {
     fetchGames();
   }, []);
-  return { games, addGame, deleteGame, updateGame, updateStatus };
+  return { games, error, addGame, deleteGame, updateGame, updateStatus };
 }

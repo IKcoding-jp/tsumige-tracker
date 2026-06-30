@@ -9,7 +9,7 @@ import Header from "../components/Header";
 import supabase from "../lib/supabase";
 
 function GameListPage({ session }) {
-  const { games, addGame, deleteGame, updateGame, updateStatus } =
+  const { games, error, addGame, deleteGame, updateGame, updateStatus } =
     useGames(session);
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
@@ -43,6 +43,7 @@ function GameListPage({ session }) {
   return (
     <div className="max-w-xl mx-auto p-8">
       <Header onSignOut={handleSignOut} />
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleAddGame} className="flex gap-2 mb-4">
         <input
           value={title}
