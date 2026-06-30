@@ -10,8 +10,15 @@ import supabase from "../lib/supabase";
 import EmptyState from "../components/EmptyState";
 
 function GameListPage({ session }) {
-  const { games, error, addGame, deleteGame, updateGame, updateStatus } =
-    useGames(session);
+  const {
+    games,
+    loading,
+    error,
+    addGame,
+    deleteGame,
+    updateGame,
+    updateStatus,
+  } = useGames(session);
   const [title, setTitle] = useState("");
   const [platform, setPlatform] = useState("");
   const [selectedGame, setSelectedGame] = useState(null);
@@ -96,7 +103,7 @@ function GameListPage({ session }) {
         </select>
       </div>
       <div className="space-y-2">
-        {visibleGames.length === 0 && (
+        {!loading && visibleGames.length === 0 && (
           <EmptyState type={games.length === 0 ? "no-games" : "no-results"} />
         )}
         {visibleGames.map((game) => (

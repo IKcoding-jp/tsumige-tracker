@@ -4,7 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import GameListPage from "./pages/GameListPage";
 
 function App() {
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState(undefined);
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -16,6 +16,7 @@ function App() {
     });
     return () => subscription.unsubscribe();
   }, []);
+  if (session === undefined) return null;
   if (!session) {
     return <LoginPage />;
   }

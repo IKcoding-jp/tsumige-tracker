@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import supabase from "../lib/supabase";
 
 export function useGames(session) {
+  const [loading, setLoading] = useState(true);
   const [games, setGames] = useState([]);
   const [error, setError] = useState(null);
 
@@ -24,9 +25,11 @@ export function useGames(session) {
         .order("created_at", { ascending: true });
       if (error) throw error;
       setGames(data ?? []);
+      setLoading(false);
     } catch (e) {
       console.error(e);
       setError("データの取得に失敗しました");
+      setLoading(false);
     }
   }
 
@@ -64,5 +67,13 @@ export function useGames(session) {
   useEffect(() => {
     fetchGames();
   }, []);
-  return { games, error, addGame, deleteGame, updateGame, updateStatus };
+  return {
+    games,
+    loading,
+    error,
+    addGame,
+    deleteGame,
+    updateGame,
+    updateStatus,
+  };
 }
