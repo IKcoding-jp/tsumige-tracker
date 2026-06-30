@@ -1,21 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { SiPlaystation, SiSteam } from "react-icons/si";
-import { BsNintendoSwitch } from "react-icons/bs";
-import { FaDesktop, FaMobileScreen, FaGamepad } from "react-icons/fa6";
 import { STATUS } from "@/utils/status";
-
-const PLATFORM_STYLE = {
-  Switch: { icon: BsNintendoSwitch, className: "bg-[#E60012] text-white" },
-  PS5: { icon: SiPlaystation, className: "bg-[#006FCD] text-white" },
-  PS4: { icon: SiPlaystation, className: "bg-[#006FCD] text-white" },
-  Steam: { icon: SiSteam, className: "bg-[#171a21] text-white" },
-  PC: { icon: FaDesktop, className: "bg-slate-600 text-white" },
-  スマホ: { icon: FaMobileScreen, className: "bg-emerald-600 text-white" },
-  その他: { icon: FaGamepad, className: "bg-amber-600 text-white" },
-};
+import { PLATFORM } from "@/utils/platform";
 
 function GameCard({ game, onEdit, onDelete, onStatusChange }) {
-  const platformStyle = PLATFORM_STYLE[game.platform];
+  const platformStyle = PLATFORM[game.platform];
   const PlatformIcon = platformStyle?.icon;
   return (
     <div className="flex items-center gap-2 p-3 border rounded">

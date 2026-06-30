@@ -148,7 +148,9 @@ const visibleGames = games.filter((game) => {
   // プラットフォーム条件：all なら全部／unset は null のみ／それ以外は一致
   const platformOk =
     platformFilter === "all" ||
-    (platformFilter === "unset" ? !game.platform : game.platform === platformFilter);
+    (platformFilter === "unset"
+      ? !game.platform
+      : game.platform === platformFilter);
   return statusOk && platformOk;
 });
 ```

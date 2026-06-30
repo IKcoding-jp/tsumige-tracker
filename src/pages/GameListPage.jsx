@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { STATUS } from "@/utils/status";
+import { PLATFORM } from "@/utils/platform";
 import supabase from "../lib/supabase";
 import GameCard from "../components/GameCard";
 import GameModal from "../components/GameModal";
 import Header from "../components/Header";
-
-const PLATFORMS = ["Switch", "PS5", "PS4", "Steam", "PC", "スマホ", "その他"];
 
 function GameListPage({ session }) {
   const [games, setGames] = useState([]);
@@ -82,7 +81,7 @@ function GameListPage({ session }) {
           className="border rounded-lg px-3 h-8"
         >
           <option value="">未設定</option>
-          {PLATFORMS.map((p) => (
+          {Object.keys(PLATFORM).map((p) => (
             <option key={p} value={p}>
               {p}
             </option>
@@ -112,7 +111,7 @@ function GameListPage({ session }) {
           className="border rounded-lg px-3 h-8"
         >
           <option value="all">すべて</option>
-          {PLATFORMS.map((p) => (
+          {Object.keys(PLATFORM).map((p) => (
             <option key={p} value={p}>
               {p}
             </option>
