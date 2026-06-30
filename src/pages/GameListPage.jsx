@@ -7,6 +7,7 @@ import GameCard from "../components/GameCard";
 import GameModal from "../components/GameModal";
 import Header from "../components/Header";
 import supabase from "../lib/supabase";
+import EmptyState from "../components/EmptyState";
 
 function GameListPage({ session }) {
   const { games, error, addGame, deleteGame, updateGame, updateStatus } =
@@ -95,6 +96,9 @@ function GameListPage({ session }) {
         </select>
       </div>
       <div className="space-y-2">
+        {visibleGames.length === 0 && (
+          <EmptyState type={games.length === 0 ? "no-games" : "no-results"} />
+        )}
         {visibleGames.map((game) => (
           <GameCard
             key={game.id}
