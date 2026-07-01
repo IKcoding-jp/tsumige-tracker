@@ -8,6 +8,8 @@ import GameModal from "../components/GameModal";
 import Header from "../components/Header";
 import supabase from "../lib/supabase";
 import EmptyState from "../components/EmptyState";
+import RandomPickOverlay from "../components/RandomPickOverlay";
+import RandomPickResult from "../components/RandomPickResult";
 
 function GameListPage({ session }) {
   const {
@@ -24,6 +26,9 @@ function GameListPage({ session }) {
   const [selectedGame, setSelectedGame] = useState(null);
   const [filter, setFilter] = useState("all");
   const [platformFilter, setPlatformFilter] = useState("all");
+  const [isPicking, setIsPicking] = useState(false);
+  const [pickingTitle, setPickingTitle] = useState("");
+  const [pickedGame, setPickedGame] = useState(null);
   async function handleSignOut() {
     await supabase.auth.signOut();
   }
@@ -34,6 +39,22 @@ function GameListPage({ session }) {
     await addGame({ title, platform });
     setTitle("");
     setPlatform("");
+  }
+
+  function handleRandomPick() {
+    const unplayedGames = games.filter((game) => game.status === "unplayed");
+    if (unplayedGames.length === 0) return;
+    setIsPicking(true);
+    const intervalId = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * unplayedGames.length);
+      setPickingTitle(unplayedGames[randomIndex].title);
+    }, 100);
+    setTimeout(() => {
+      clearInterval(intervalId);
+      const randomIndex = Math.floor(Math.random() * unplayedGames.length);
+      setPickedGame(unplayedGames[randomIndex]);
+      setIsPicking(false);
+    }, 1200);
   }
 
   const visibleGames = games.filter((game) => {
@@ -49,7 +70,13 @@ function GameListPage({ session }) {
   });
   return (
     <div className="max-w-xl mx-auto p-8">
-      <Header onSignOut={handleSignOut} />
+      <Header
+        onSignOut={handleSignOut}
+        onRandomPick={handleRandomPick}
+        randomPickDisabled={
+          isPicking || !games.some((game) => game.status === "unplayed")
+        }
+      />
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleAddGame} className="flex gap-2 mb-4">
         <input
@@ -115,6 +142,17 @@ function GameListPage({ session }) {
           />
         ))}
       </div>
+      {isPicking && <RandomPickOverlay title={pickingTitle} />}
+      {pickedGame !== null && (
+        <RandomPickResult
+          game={pickedGame}
+          onStart={() => {
+            updateStatus(pickedGame.id, "playing");
+            setPickedGame(null);
+          }}
+          onClose={() => setPickedGame(null)}
+        />
+      )}
       {selectedGame !== null && (
         <GameModal
           game={selectedGame}
